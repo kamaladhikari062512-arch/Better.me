@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#172554">
+<meta name="description" content="Your personal six-month growth tracker">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Better Me — Personal Growth Tracker</title>
+<style>
+:root{--navy:#172554;--blue:#2563eb;--bg:#f4f6fb;--card:#fff;--text:#172033;--muted:#687386;--line:#e5e9f2;--green:#16845b;--orange:#d97706}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(135deg,#172554,#1d4ed8);color:#fff;padding:22px 18px 26px;border-radius:0 0 24px 24px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:13px;letter-spacing:1.4px;opacity:.8;font-weight:700}.install{background:#fff;color:var(--navy);border:0;border-radius:999px;padding:9px 13px;font-weight:700}
+h1{font-size:28px;margin:12px 0 5px}.sub{opacity:.85;font-size:14px}.dayline{display:flex;gap:12px;align-items:center;margin-top:18px}.daynum{font-size:34px;font-weight:800}.progress{height:8px;background:#ffffff40;border-radius:9px;overflow:hidden;margin-top:5px}.progress>i{display:block;height:100%;background:#86efac;width:0}
+main{max-width:850px;margin:auto;padding:15px 14px 90px}.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 12px;position:sticky;top:0;background:var(--bg);z-index:3}.tab{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:999px;white-space:nowrap;font-weight:650;color:#42506a}.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;margin:0 0 13px;box-shadow:0 4px 15px #15264b08}.card h2{font-size:17px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.metric{font-size:23px;font-weight:800}.habit{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}.habit:last-child{border:0}.habit input{width:21px;height:21px;accent-color:var(--green)}.habit label{flex:1;font-weight:600}.habit small{display:block;color:var(--muted);font-weight:400;margin-top:2px}.pill{font-size:11px;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#3346a0}
+input,textarea,select{width:100%;padding:11px 12px;border:1px solid #dce2ed;border-radius:10px;font:inherit;background:#fff;color:var(--text);margin:5px 0 10px}textarea{min-height:95px;resize:vertical}button.primary,button.secondary{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}.primary{background:var(--blue);color:#fff}.secondary{background:#edf2ff;color:#1e40af}.danger{background:#fff0f0;color:#b42318}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.roadmap{border-left:3px solid #bfccf5;padding:2px 0 4px 14px;margin:12px 0}.roadmap strong{display:block}.roadmap p{margin:4px 0;color:var(--muted);font-size:13px}.entry{padding:10px 0;border-bottom:1px solid var(--line)}.entry:last-child{border:0}.footer{text-align:center;color:var(--muted);font-size:12px;padding:12px}
+@media(min-width:650px){main{padding-top:20px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><div class="brand">YOUR PERSONAL GROWTH SYSTEM</div><button class="install" id="installBtn" hidden>Install app</button></div>
+ <h1>Better Me</h1><div class="sub">Small actions. Consistent progress. A stronger you.</div>
+ <div class="dayline"><div><div class="daynum" id="dayCount">Day 1 / 180</div><div class="sub">Your six-month journey</div></div><div style="flex:1"><div class="row sub"><span>Overall journey</span><span id="journeyPct">0%</span></div><div class="progress"><i id="journeyBar"></i></div></div></div>
+</header>
+<main>
+<nav class="tabs">
+ <button class="tab active" data-tab="today">Today</button><button class="tab" data-tab="skills">Skills</button><button class="tab" data-tab="health">Health</button><button class="tab" data-tab="money">Budget</button><button class="tab" data-tab="journal">Journal</button><button class="tab" data-tab="coach">AI Coach</button>
+</nav>
+<section class="panel active" id="today">
+ <div class="card"><div class="row"><h2>Today's progress</h2><span class="pill" id="dateLabel"></span></div><div class="row"><div><div class="metric" id="doneCount">0 / 6</div><div class="muted">habits completed</div></div><div style="width:52%"><div class="progress" style="background:#e9edf5"><i id="dailyBar" style="background:#16a36a"></i></div><div class="muted" id="dailyPct" style="text-align:right;margin-top:5px">0%</div></div></div></div>
+ <div class="card"><h2>Daily habit checklist</h2><div id="habits"></div><div class="muted">Tick each habit when you complete it. Your progress is saved automatically on this device.</div></div>
+ <div class="card"><h2>Today's main priority</h2><textarea id="priority" placeholder="Example: Complete 30 minutes of Excel practice..."></textarea><button class="primary" id="savePriority">Save priority</button></div>
+ <div class="card"><h2>Six-month direction</h2><div class="roadmap"><strong>Month 1 — Build discipline</strong><p>Consistent routine, basic English practice, fitness foundation, digital confidence.</p></div><div class="roadmap"><strong>Month 2 — Excel and business basics</strong><p>Spreadsheets, formulas, bookkeeping, business communication.</p></div><div class="roadmap"><strong>Month 3 — Digital marketing</strong><p>Canva, content planning, social media and a sample portfolio.</p></div><div class="roadmap"><strong>Month 4 — Data analysis</strong><p>Excel dashboards, data cleaning and Power BI fundamentals.</p></div><div class="roadmap"><strong>Month 5 — Practical projects</strong><p>Build two portfolio projects and approach local businesses.</p></div><div class="roadmap"><strong>Month 6 — Career launch</strong><p>CV, LinkedIn, applications, client outreach and review.</p></div></div>
+</section>
+<section class="panel" id="skills">
+ <div class="card"><h2>Skill development tracker</h2><label class="muted">Current focus</label><select id="skillFocus"><option>Excel and Google Sheets</option><option>English communication</option><option>Digital marketing</option><option>Power BI and data analysis</option><option>Accounting and bookkeeping</option><option>AI productivity tools</option><option>Music and singing</option></select><label class="muted">Weekly target (hours)</label><input type="number" min="0" max="50" id="skillHours" value="5"><label class="muted">Hours completed this week</label><input type="number" min="0" max="50" id="skillDone" value="0"><button class="primary" id="saveSkill">Save skill progress</button></div>
+ <div class="card"><h2>Recommended free learning resources</h2><div class="entry"><strong>Excel / spreadsheets</strong><p class="muted">Microsoft Learn and YouTube beginner Excel courses.</p></div><div class="entry"><strong>Digital marketing</strong><p class="muted">Google Skillshop and HubSpot Academy.</p></div><div class="entry"><strong>Power BI</strong><p class="muted">Microsoft Learn — Power BI learning paths.</p></div><div class="entry"><strong>English speaking</strong><p class="muted">Record a 2-minute voice note daily and review clarity.</p></div><div class="entry"><strong>Singing</strong><p class="muted">10–15 minutes of gentle warm-ups, pitch matching and one simple song.</p></div></div>
+</section>
+<section class="panel" id="health">
+ <div class="card"><h2>Physical health log</h2><div class="grid"><div><label class="muted">Weight (kg)</label><input id="weight" type="number" step=".1" placeholder="e.g. 42"></div><div><label class="muted">Sleep (hours)</label><input id="sleep" type="number" step=".5" placeholder="e.g. 7.5"></div></div><label class="muted">Workout / movement</label><input id="workout" placeholder="e.g. 3 sets of squats and push-ups"><label class="muted">Food / nutrition note</label><textarea id="nutrition" placeholder="What did you eat? Any improvement to make tomorrow?"></textarea><button class="primary" id="saveHealth">Save health log</button></div>
+ <div class="card"><h2>Simple home routine</h2><p class="muted">Start gently and increase gradually. Rest if you feel pain, dizziness or unusual weakness.</p><ul><li>Squats — 2 sets of 8–12</li><li>Wall or knee push-ups — 2 sets of 5–10</li><li>Glute bridges — 2 sets of 10</li><li>Plank — 2 × 15–25 seconds</li><li>Easy walk and light stretching</li></ul><p class="muted">Aim for regular meals, affordable protein sources and adequate sleep. If weakness is persistent or worsening, seek medical advice.</p></div>
+ <div class="card"><h2>Recent health entries</h2><div id="healthHistory" class="muted">No entries yet.</div></div>
+</section>
+<section class="panel" id="money">
+ <div class="card"><h2>Daily budget — NPR 50</h2><div class="row"><div><div class="metric">रु 50</div><div class="muted">Suggested daily spending limit</div></div><span class="pill">NPR</span></div><label class="muted">Today's spending</label><input id="spend" type="number" min="0" placeholder="Enter amount"><label class="muted">What did you spend on?</label><input id="spendNote" placeholder="e.g. transport, snack, data"><button class="primary" id="saveMoney">Save today's spending</button><div class="row" style="margin-top:14px"><span class="muted">Remaining from NPR 50</span><strong id="remaining">NPR 50</strong></div></div>
+ <div class="card"><h2>Spending history</h2><div id="moneyHistory" class="muted">No entries yet.</div></div>
+</section>
+<section class="panel" id="journal">
+ <div class="card"><h2>Daily reflection</h2><label class="muted">What went well today?</label><textarea id="wentWell" placeholder="One small win..."></textarea><label class="muted">What challenged me?</label><textarea id="challenge" placeholder="Be honest, not harsh..."></textarea><label class="muted">One action for tomorrow</label><textarea id="tomorrow" placeholder="A realistic next step..."></textarea><button class="primary" id="saveJournal">Save reflection</button></div>
+ <div class="card"><h2>Previous reflections</h2><div id="journalHistory" class="muted">No reflections yet.</div></div>
+</section>
+<section class="panel" id="coach">
+ <div class="card"><h2>Your AI coach</h2><p class="muted">This app does not contain a built-in AI model or send your personal data anywhere. Copy the prompt below into ChatGPT when you want coaching.</p><textarea id="coachPrompt" readonly></textarea><button class="primary" id="copyPrompt">Copy coaching prompt</button></div>
+ <div class="card"><h2>Weekly review questions</h2><ol><li>What did I complete consistently?</li><li>Which skill improved measurably?</li><li>What wasted my time?</li><li>What is one adjustment for next week?</li><li>What is one thing I should appreciate about myself?</li></ol></div>
+</section>
+<div class="footer">Better Me Tracker · Your data stays in this browser on this device.<br><button class="secondary" id="exportData" style="margin-top:10px">Export my data</button> <button class="secondary danger" id="clearData" style="margin-top:10px">Reset all data</button></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().slice(0,10);
+const KEY='betterMeTracker_v1';
+const defaultData={start:today(),habits:{},priorities:{},skill:{focus:'Excel and Google Sheets',hours:5,done:0},health:[],money:[],journal:[]};
+let data;
+try{data={...defaultData,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){data={...defaultData}}
+const habitList=[
+ ['fitness','Move your body','15–25 minutes of home exercise or walking'],
+ ['skill','Learn a practical skill','30–45 minutes of focused practice'],
+ ['english','English communication','Speak, read aloud or record for 15 minutes'],
+ ['study','BBA / academic progress','Complete one focused study block'],
+ ['music','Music practice','10 minutes of gentle singing or listening practice'],
+ ['discipline','Discipline and money','Plan tomorrow and record spending']
+];
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function dayIndex(){let a=new Date(data.start+'T00:00:00'),b=new Date(today()+'T00:00:00');return Math.max(1,Math.min(180,Math.floor((b-a)/86400000)+1))}
+function render(){
+ const d=today(),checks=data.habits[d]||{};
+ $('dateLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+ $('habits').innerHTML=habitList.map(([id,name,desc])=>`<div class="habit"><input type="checkbox" id="h_${id}" ${checks[id]?'checked':''}><label for="h_${id}">${name}<small>${desc}</small></label></div>`).join('');
+ habitList.forEach(([id])=>$('h_'+id).addEventListener('change',e=>{data.habits[d]=data.habits[d]||{};data.habits[d][id]=e.target.checked;save()}));
+ let done=habitList.filter(([id])=>checks[id]).length,pct=Math.round(done/6*100);
+ $('doneCount').textContent=`${done} / 6`;$('dailyPct').textContent=pct+'%';$('dailyBar').style.width=pct+'%';
+ let day=dayIndex();$('dayCount').textContent=`Day ${day} / 180`;$('journeyPct').textContent=Math.round(day/180*100)+'%';$('journeyBar').style.width=(day/180*100)+'%';
+ $('priority').value=data.priorities[d]||'';
+ $('skillFocus').value=data.skill.focus;$('skillHours').value=data.skill.hours;$('skillDone').value=data.skill.done;
+ $('healthHistory').innerHTML=data.health.length?data.health.slice(-5).reverse().map(x=>`<div class="entry"><strong>${x.date}</strong> · ${x.weight||'—'} kg · ${x.sleep||'—'} hrs<br>${esc(x.workout||'No workout note')}</div>`).join(''):'No entries yet.';
+ $('moneyHistory').innerHTML=data.money.length?data.money.slice(-7).reverse().map(x=>`<div class="entry"><strong>${x.date}</strong> · NPR ${x.amount}<br>${esc(x.note||'')}</div>`).join(''):'No entries yet.';
+ let spent=(data.money.find(x=>x.date===d)||{}).amount||0;$('spend').value=spent;$('remaining').textContent='NPR '+(50-spent);$('spendNote').value=(data.money.find(x=>x.date===d)||{}).note||'';
+ $('journalHistory').innerHTML=data.journal.length?data.journal.slice(-5).reverse().map(x=>`<div class="entry"><strong>${x.date}</strong><p>${esc(x.well)}</p><small class="muted">Next: ${esc(x.next)}</small></div>`).join(''):'No reflections yet.';
+ $('coachPrompt').value=`Act as my practical, supportive personal growth coach. I am a BBA student in Nepal with a limited budget and a six-month goal to build confidence, physical strength, English communication, employable skills (Excel, bookkeeping, digital marketing and data analysis), and a beginner singing habit. My daily progress today: ${done}/6 habits completed. My current skill focus is ${data.skill.focus}; weekly target ${data.skill.hours} hours, completed ${data.skill.done}. Give me realistic advice for tomorrow, identify one priority, and avoid unrealistic promises or expensive recommendations. Ask me only one question at a time.`;
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')}));
+$('savePriority').onclick=()=>{data.priorities[today()]=$('priority').value;save();alert('Priority saved.')};
+$('saveSkill').onclick=()=>{data.skill={focus:$('skillFocus').value,hours:+$('skillHours').value||0,done:+$('skillDone').value||0};save();alert('Skill progress saved.')};
+$('saveHealth').onclick=()=>{data.health.push({date:today(),weight:$('weight').value,sleep:$('sleep').value,workout:$('workout').value,nutrition:$('nutrition').value});$('weight').value='';$('sleep').value='';$('workout').value='';$('nutrition').value='';save();alert('Health log saved.')};
+$('saveMoney').onclick=()=>{let amount=Math.max(0,+$('spend').value||0),x=data.money.find(x=>x.date===today());if(x){x.amount=amount;x.note=$('spendNote').value}else data.money.push({date:today(),amount,note:$('spendNote').value});save();alert('Spending saved.')};
+$('saveJournal').onclick=()=>{data.journal.push({date:today(),well:$('wentWell').value,challenge:$('challenge').value,next:$('tomorrow').value});$('wentWell').value='';$('challenge').value='';$('tomorrow').value='';save();alert('Reflection saved.')};
+$('copyPrompt').onclick=async()=>{try{await navigator.clipboard.writeText($('coachPrompt').value);alert('Prompt copied. Paste it into ChatGPT.')}catch(e){$('coachPrompt').select();document.execCommand('copy');alert('Prompt copied.')}};
+$('exportData').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='better-me-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('clearData').onclick=()=>{if(confirm('Delete all tracker data from this device? Export a backup first if needed.')){localStorage.removeItem(KEY);data={...defaultData};render()}};
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').hidden=false});
+$('installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').hidden=true}else alert('Use your browser menu and choose “Add to Home screen” or “Install app”.')};
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+render();
+</script>
+</body></html>
